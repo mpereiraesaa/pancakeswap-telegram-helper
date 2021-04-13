@@ -12,6 +12,7 @@
   "dependencies": {
     "@binance-chain/bsc-connector": "^1.0.0",
     "@ethersproject/abi": "^5.1.0",
+    "@ethersproject/contracts": "^5.1.0",
     "@ethersproject/strings": "^5.1.0",
     "@pancakeswap-libs/sdk": "^1.0.1",
     "@truffle/hdwallet-provider": "^1.2.3",

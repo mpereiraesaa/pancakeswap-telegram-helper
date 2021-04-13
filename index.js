@@ -20,9 +20,8 @@ const account = wallet.connect(bscProvider);
 
 const SAFEMOON_ADDRESS = '0x8076c74c5e3f5852037f31ff0093eeb8c8add8d3';
 const PIG_ADDRESS = '0x8850d2c68c632e3b258e612abaa8fada7e6958e5';
-const FELA_ADDRESS = '0xd513417d3ceb6331f21284ebb533952b95620a7e';
 
-const TOKENS = [{ address: SAFEMOON_ADDRESS, initial: 200 }, { address: PIG_ADDRESS, initial: 1000 }, { address: FELA_ADDRESS, initial: 500 }];
+const TOKENS = [{ address: SAFEMOON_ADDRESS, initial: 200 }, { address: PIG_ADDRESS, initial: 1000 }];
 
 async function main() {
   const promises = TOKENS.map(async ({ address: tokenAddress, initial }) => {
