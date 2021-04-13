@@ -4,13 +4,14 @@ const BASE_TOKEN = require('./baseToken');
 const { MNEMONIC, BOT_TOKEN, OWN_CHAT_ID } = require('./config');
 
 const { parseBytes32String } = require('@ethersproject/strings');
-const { ChainId, Token, Fetcher, TokenAmount } = require('@pancakeswap-libs/sdk');
+const { ChainId, Token, Fetcher, TokenAmount, WETH } = require('@pancakeswap-libs/sdk');
 const ethers = require('ethers');
 const fetch = require('node-fetch');
 
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/;
 
 const chainId = ChainId.MAINNET;
+const WBNB = WETH[chainId];
 
 const bscProvider = new ethers.providers.JsonRpcProvider('https://bsc-dataseed.binance.org/');
 
@@ -43,19 +44,19 @@ async function main() {
     );
   
     const token0InputAmount = await contract.balanceOf(account.address);
-    const Pair = await Fetcher.fetchPairData(token0, BASE_TOKEN.WBNB, bscProvider);
+    const Pair = await Fetcher.fetchPairData(token0, WBNB, bscProvider);
     const outputAmount = Pair.getOutputAmount(new TokenAmount(token0, token0InputAmount));
     const WBNB_AMOUNT = outputAmount[0].raw.toString();
   
-    const Pair2 = await Fetcher.fetchPairData(BASE_TOKEN.WBNB, BASE_TOKEN.BUSD, bscProvider);
-    const outputAmount2 = Pair2.getOutputAmount(new TokenAmount(BASE_TOKEN.WBNB, BigInt(outputAmount[0].raw) ));
+    const Pair2 = await Fetcher.fetchPairData(WBNB, BASE_TOKEN.BUSD, bscProvider);
+    const outputAmount2 = Pair2.getOutputAmount(new TokenAmount(WBNB, BigInt(outputAmount[0].raw) ));
     const BUSD_AMOUNT = ethers.utils.formatUnits(outputAmount2[0].raw.toString(), BASE_TOKEN.BUSD.decimals);
   
     return [
       `Token: ${token0.name}`,
       `Token Balance: ${token0InputAmount}`,
       `Initial Invest USD: ${initial}`,
-      `Estimated output: ${ethers.utils.formatEther(WBNB_AMOUNT)} ${BASE_TOKEN.WBNB.symbol}`,
+      `Estimated output: ${ethers.utils.formatEther(WBNB_AMOUNT)} ${WBNB.symbol}`,
       `Estimated USD: ${BUSD_AMOUNT}`,
       `Profit/Loss: ${(((parseFloat(BUSD_AMOUNT)/parseFloat(initial))-1)*100).toFixed(2)}%`
     ].join('\n');
