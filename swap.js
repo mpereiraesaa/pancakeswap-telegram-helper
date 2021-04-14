@@ -67,7 +67,7 @@ async function run() {
     const Pair = await Fetcher.fetchPairData(WBNB, customToken, bscProvider);
     const route = new Route([Pair], WBNB);
     const trade = new Trade(route, new TokenAmount(WBNB, inputAmount), TradeType.EXACT_INPUT);
-    const slippageTolerance = new Percent(JSBI.BigInt(1200), BIPS_BASE) // 12%
+    const slippageTolerance = new Percent(JSBI.BigInt(500), BIPS_BASE) // 5%
 
     const executionPriceFrom = trade.executionPrice.toSignificant(6);
     const executionPriceTo = trade.executionPrice.invert().toSignificant(6);
