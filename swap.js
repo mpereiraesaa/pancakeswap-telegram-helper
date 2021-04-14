@@ -67,7 +67,7 @@ async function run() {
     const Pair = await Fetcher.fetchPairData(WBNB, customToken, bscProvider);
     const route = new Route([Pair], WBNB);
     const trade = new Trade(route, new TokenAmount(WBNB, inputAmount), TradeType.EXACT_INPUT);
-    const slippageTolerance = new Percent(JSBI.BigInt(100), BIPS_BASE) // 1%
+    const slippageTolerance = new Percent(JSBI.BigInt(1200), BIPS_BASE) // 12%
 
     const executionPriceFrom = trade.executionPrice.toSignificant(6);
     const executionPriceTo = trade.executionPrice.invert().toSignificant(6);
@@ -93,7 +93,7 @@ async function run() {
     });
 
     const tx = await router[methodName](
-      ...args,
+      ...args, { gasLimit: 245682 },
     );
 
     console.log(`Transaction hash: ${tx.hash}`);
@@ -107,7 +107,7 @@ async function run() {
     const Pair = await Fetcher.fetchPairData(customToken, WBNB, bscProvider);
     const route = new Route([Pair], customToken);
     const trade = new Trade(route, new TokenAmount(customToken, inputAmount), TradeType.EXACT_INPUT);
-    const slippageTolerance = new Percent(JSBI.BigInt(1000), BIPS_BASE) // 10%
+    const slippageTolerance = new Percent(JSBI.BigInt(1200), BIPS_BASE) // 12%
 
     const executionPriceFrom = trade.executionPrice.toSignificant(6);
     const executionPriceTo = trade.executionPrice.invert().toSignificant(6);
