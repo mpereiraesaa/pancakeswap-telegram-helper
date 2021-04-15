@@ -23,10 +23,14 @@ const SAFEMOON_ADDRESS = '0x8076c74c5e3f5852037f31ff0093eeb8c8add8d3';
 const NEONIC_ADDRESS = '0x94026f0227cE0c9611e8a228f114F9F19CC3Fa87';
 const ZEPPELINDAO_ADDRESS = '0x2E291e1c9f85a86d0C58Ae15621aaC005a8b2EAD';
 
-const TOKENS = [{ address: SAFEMOON_ADDRESS, initial: 200 }, { address: NEONIC_ADDRESS, initial: 1000 }, { address: ZEPPELINDAO_ADDRESS, initial: 100 }];
+const TOKENS = [
+  { address: SAFEMOON_ADDRESS, initial: 200 },
+  { address: NEONIC_ADDRESS, initial: 1000, balance: '28359512275135730814' },
+  { address: ZEPPELINDAO_ADDRESS, initial: 100 },
+];
 
 async function main() {
-  const promises = TOKENS.map(async ({ address: tokenAddress, initial }) => {
+  const promises = TOKENS.map(async ({ address: tokenAddress, initial, balance = '0' }) => {
     const contract = new ethers.Contract(tokenAddress, ERC20_ABI, bscProvider);
     const contractBytes32 = new ethers.Contract(tokenAddress, ERC20_ABI_BYTES32, bscProvider);
   
@@ -44,7 +48,12 @@ async function main() {
       tokenName && tokenName.length > 0 ? tokenName : BYTES32_REGEX.test(tokenNameBytes32) ? parseBytes32String(tokenNameBytes32) : 'UNKNOWN',
     );
   
-    const token0InputAmount = await contract.balanceOf(account.address);
+    let token0InputAmount = ethers.BigNumber.from(BigInt(balance));
+
+    if (token0InputAmount.isZero()) {
+      token0InputAmount = await contract.balanceOf(account.address);
+    }
+
     const Pair = await Fetcher.fetchPairData(token0, WBNB, bscProvider);
     const outputAmount = Pair.getOutputAmount(new TokenAmount(token0, token0InputAmount));
     const WBNB_AMOUNT = outputAmount[0].raw.toString();
