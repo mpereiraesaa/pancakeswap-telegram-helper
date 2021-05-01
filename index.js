@@ -13,7 +13,7 @@ const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/;
 const chainId = ChainId.MAINNET;
 const WBNB = WETH[chainId];
 
-const bscProvider = new ethers.providers.JsonRpcProvider('https://bsc-dataseed1.defibit.io/');
+const bscProvider = new ethers.providers.JsonRpcProvider('https://bsc-dataseed.binance.org/');
 
 const wallet = ethers.Wallet.fromMnemonic(MNEMONIC);
 
