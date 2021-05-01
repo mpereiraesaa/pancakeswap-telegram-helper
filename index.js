@@ -25,10 +25,10 @@ const ZEPPELINDAO_ADDRESS = '0x2E291e1c9f85a86d0C58Ae15621aaC005a8b2EAD';
 const HUNDREDXCOIN_ADDRESS = '0x016c285d5b918b92aa85ef1e147498badfe30d69';
 
 const TOKENS = [
-  { address: SAFEMOON_ADDRESS, initial: 200 },
+  { address: SAFEMOON_ADDRESS, initial: 1150 },
   { address: NEONIC_ADDRESS, initial: 1000, balance: '28359512275135730814' },
   { address: ZEPPELINDAO_ADDRESS, initial: 100 },
-  { address: HUNDREDXCOIN_ADDRESS, initial: 400 },
+  { address: HUNDREDXCOIN_ADDRESS, initial: 2150 },
 ];
 
 async function main() {
