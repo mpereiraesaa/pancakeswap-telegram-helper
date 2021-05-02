@@ -1,14 +1,13 @@
 const ERC20_ABI = require('./erc20.json');
-const ERC20_ABI_BYTES32 = require('./erc20_bytes32.json');
 const BASE_TOKEN = require('./baseToken');
+const { abi: IUniswapV2Router02ABI } = require('./IUniswapV2Router02.json');
 const { MNEMONIC, BOT_TOKEN, OWN_CHAT_ID } = require('./config');
 
-const { parseBytes32String } = require('@ethersproject/strings');
-const { ChainId, Token, Fetcher, TokenAmount, WETH } = require('@pancakeswap-libs/sdk');
+const { ChainId, WETH } = require('@pancakeswap-libs/sdk');
 const ethers = require('ethers');
 const fetch = require('node-fetch');
 
-const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/;
+const ROUTER_ADDRESS = '0x10ED43C718714eb63d5aA57B78B54704E256024E';
 
 const chainId = ChainId.MAINNET;
 const WBNB = WETH[chainId];
@@ -34,40 +33,27 @@ const TOKENS = [
 ];
 
 async function main() {
+  const router = new ethers.Contract(ROUTER_ADDRESS, IUniswapV2Router02ABI, account);
+
   const promises = TOKENS.map(async ({ address: tokenAddress, initial, balance = '0' }) => {
     const contract = new ethers.Contract(tokenAddress, ERC20_ABI, bscProvider);
-    const contractBytes32 = new ethers.Contract(tokenAddress, ERC20_ABI_BYTES32, bscProvider);
-  
     const tokenName = await contract.name();
-    const tokenNameBytes32 = await contractBytes32.name();
-    const tokenSymbol = await contract.symbol();
-    const tokenSymbolBytes32 = await contractBytes32.symbol();
-    const decimals = await contract.decimals();
-  
-    const token0 = new Token(
-      chainId,
-      tokenAddress,
-      decimals,
-      tokenSymbol && tokenSymbol.length > 0 ? tokenSymbol : BYTES32_REGEX.test(tokenSymbolBytes32) ? parseBytes32String(tokenSymbolBytes32) : 'UNKNOWN',
-      tokenName && tokenName.length > 0 ? tokenName : BYTES32_REGEX.test(tokenNameBytes32) ? parseBytes32String(tokenNameBytes32) : 'UNKNOWN',
-    );
-  
+
     let token0InputAmount = ethers.BigNumber.from(BigInt(balance));
 
     if (token0InputAmount.isZero()) {
       token0InputAmount = await contract.balanceOf(account.address);
     }
 
-    const Pair = await Fetcher.fetchPairData(token0, WBNB, bscProvider);
-    const outputAmount = Pair.getOutputAmount(new TokenAmount(token0, token0InputAmount));
-    const WBNB_AMOUNT = outputAmount[0].raw.toString();
-  
-    const Pair2 = await Fetcher.fetchPairData(WBNB, BASE_TOKEN.BUSD, bscProvider);
-    const outputAmount2 = Pair2.getOutputAmount(new TokenAmount(WBNB, BigInt(outputAmount[0].raw) ));
-    const BUSD_AMOUNT = ethers.utils.formatUnits(outputAmount2[0].raw.toString(), BASE_TOKEN.BUSD.decimals);
+    const amounts = await router.getAmountsOut(token0InputAmount, [tokenAddress, WBNB.address]);
+    const WBNB_AMOUNT = amounts[1];
+
+    const amounts2 = await router.getAmountsOut(WBNB_AMOUNT, [WBNB.address, BASE_TOKEN.BUSD.address]);
+    const outputAmount2 = amounts2[1];
+    const BUSD_AMOUNT = ethers.utils.formatUnits(outputAmount2, BASE_TOKEN.BUSD.decimals);
 
     return [
-      `Token: ${token0.name}`,
+      `Token: ${tokenName}`,
       `Token Balance: ${token0InputAmount.toString()}`,
       `Initial Invest USD: ${initial}`,
       `Estimated output: ${ethers.utils.formatEther(WBNB_AMOUNT)} ${WBNB.symbol}`,
