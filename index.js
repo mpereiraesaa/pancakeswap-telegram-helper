@@ -23,12 +23,14 @@ const SAFEMOON_ADDRESS = '0x8076c74c5e3f5852037f31ff0093eeb8c8add8d3';
 const NEONIC_ADDRESS = '0x94026f0227cE0c9611e8a228f114F9F19CC3Fa87';
 const ZEPPELINDAO_ADDRESS = '0x2E291e1c9f85a86d0C58Ae15621aaC005a8b2EAD';
 const HUNDREDXCOIN_ADDRESS = '0x016c285d5b918b92aa85ef1e147498badfe30d69';
+const PANTHERSWAP_ADDRESS = '0x1f546ad641b56b86fd9dceac473d1c7a357276b7';
 
 const TOKENS = [
   { address: SAFEMOON_ADDRESS, initial: 1150 },
   { address: NEONIC_ADDRESS, initial: 1000, balance: '28359512275135730814' },
   { address: ZEPPELINDAO_ADDRESS, initial: 100 },
   { address: HUNDREDXCOIN_ADDRESS, initial: 2150 },
+  { address: PANTHERSWAP_ADDRESS, initial: 5000 },
 ];
 
 async function main() {
