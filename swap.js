@@ -1,9 +1,10 @@
+require('dotenv').config();
 const WETH_ABI = require('./weth.json');
 const ERC20_ABI = require('./erc20.json');
 const ERC20_ABI_BYTES32 = require('./erc20_bytes32.json');
 const { abi: IUniswapV2Router02ABI } = require('./IUniswapV2Router02.json');
 
-const { MNEMONIC } = require('./config');
+const { MNEMONIC } = process.env;
 
 const { parseBytes32String } = require('@ethersproject/strings');
 const { ChainId, Token, Fetcher, TokenAmount, Route, Trade, Percent, TradeType, JSBI, Router, WETH, ETHER } = require('@pancakeswap-libs/sdk');
