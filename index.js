@@ -1,6 +1,7 @@
 require('dotenv').config();
 const ERC20_ABI = require('./erc20.json');
 const BASE_TOKEN = require('./baseToken');
+const TOKENS = require('./portfolio');
 const { abi: IUniswapV2Router02ABI } = require('./IUniswapV2Router02.json');
 const { MNEMONIC, BOT_TOKEN, OWN_CHAT_ID } = process.env;
 
@@ -14,20 +15,6 @@ const bscProvider = new ethers.providers.JsonRpcProvider('https://bsc-dataseed.b
 const wallet = ethers.Wallet.fromMnemonic(MNEMONIC);
 
 const account = wallet.connect(bscProvider);
-
-const SAFEMOON_ADDRESS = '0x8076c74c5e3f5852037f31ff0093eeb8c8add8d3';
-const NEONIC_ADDRESS = '0x94026f0227cE0c9611e8a228f114F9F19CC3Fa87';
-const ZEPPELINDAO_ADDRESS = '0x2E291e1c9f85a86d0C58Ae15621aaC005a8b2EAD';
-const HUNDREDXCOIN_ADDRESS = '0x016c285d5b918b92aa85ef1e147498badfe30d69';
-const PANTHERSWAP_ADDRESS = '0x1f546ad641b56b86fd9dceac473d1c7a357276b7';
-
-const TOKENS = [
-  { address: SAFEMOON_ADDRESS, initial: 1150, router: '0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F' },
-  { address: NEONIC_ADDRESS, initial: 1000, balance: '28359512275135730814', router: '0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F' },
-  { address: ZEPPELINDAO_ADDRESS, initial: 100, router: '0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F' },
-  { address: HUNDREDXCOIN_ADDRESS, initial: 2150, router: '0x05fF2B0DB69458A0750badebc4f9e13aDd608C7F' },
-  { address: PANTHERSWAP_ADDRESS, initial: 5000, router: '0x10ED43C718714eb63d5aA57B78B54704E256024E' },
-];
 
 async function main() {
   const promises = TOKENS.map(async ({ address: tokenAddress, initial, balance = '0', router: routerAddress }) => {
